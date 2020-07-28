@@ -9,7 +9,6 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
-no_permission = 'Sorry you don\'t have permission to use this command.'
 
 
 class Admin(commands.Cog):
@@ -21,7 +20,7 @@ class Admin(commands.Cog):
     @commands.command()
     async def cogs(self, ctx):
         if ctx.author.id != int(os.getenv('DEV_ID')):
-            await ctx.send(no_permission)
+            await ctx.send(os.getenv('NO_PERMISSION'))
             return
         cogs = ''
         for filename in os.listdir('./cogs'):
@@ -33,7 +32,7 @@ class Admin(commands.Cog):
     @commands.command()
     async def kick(self, ctx, member: discord.Member, *, reason=None):
         if ctx.author.id != int(os.getenv('DEV_ID')):
-            await ctx.send(no_permission)
+            await ctx.send(os.getenv('NO_PERMISSION'))
             return
         await member.kick(reason=reason)
         if reason:
@@ -45,7 +44,7 @@ class Admin(commands.Cog):
     @commands.command()
     async def ban(self, ctx, member: discord.Member, *, reason=None):
         if ctx.author.id != int(os.getenv('DEV_ID')):
-            await ctx.send(no_permission)
+            await ctx.send(os.getenv('NO_PERMISSION'))
             return
         await member.ban(reason=reason)
         if reason:
@@ -57,7 +56,7 @@ class Admin(commands.Cog):
     @commands.command()
     async def unban(self, ctx, *, member=None):
         if ctx.author.id != int(os.getenv('DEV_ID')):
-            await ctx.send(no_permission)
+            await ctx.send(os.getenv('NO_PERMISSION'))
             return
         banned_users = await ctx.guild.bans()
         member_name, member_discriminator = member.split('#')
@@ -73,7 +72,7 @@ class Admin(commands.Cog):
     @commands.command()
     async def clear(self, ctx, *, amount: typing.Union[int, float, str]):
         if ctx.author.id != int(os.getenv('DEV_ID')):
-            await ctx.send(no_permission)
+            await ctx.send(os.getenv('NO_PERMISSION'))
             return
         if isinstance(amount, int) and amount > 0:
             if amount < 26:

@@ -6,15 +6,8 @@
 # organize a collection of commands, listeners, and some state into
 # one class. Cogs allow you to do just that.
 """
-import discord
-import os
 import random
-import typing
 from discord.ext import commands
-from dotenv import load_dotenv
-
-load_dotenv()
-no_permission = 'Sorry you don\'t have permission to use this command.'
 
 
 class Test(commands.Cog):
