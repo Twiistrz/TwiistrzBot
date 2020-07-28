@@ -21,7 +21,7 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, error):
         # Errors: MissingRequiredArgument, CommandNotFound
         if isinstance(error, commands.CommandNotFound):
-            await ctx.send('Invalid command.')
+            pass
 
 
 def setup(client):
