@@ -2,8 +2,6 @@
 # (C) 2020 Emmanuel See Te, Cavite, Philippines
 # -----------------------------------------------------------
 import discord
-import os
-import random
 import typing
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -12,55 +10,52 @@ load_dotenv()
 
 
 class Admin(commands.Cog):
-    # initialize
     def __init__(self, client):
         self.client = client
 
-    # cogs command
     @commands.command()
-    async def cogs(self, ctx):
-        if ctx.author.id != int(os.getenv('DEV_ID')):
-            await ctx.send(os.getenv('NO_PERMISSION'))
-            return
-        cogs = ''
-        for filename in os.listdir('./cogs'):
-            if filename.endswith('.py'):
-                cogs += filename[:-3] + ' '
-        await ctx.send(f'Cogs: {cogs}')
-
-    # kick command
-    @commands.command()
+    @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason=None):
-        if ctx.author.id != int(os.getenv('DEV_ID')):
-            await ctx.send(os.getenv('NO_PERMISSION'))
-            return
+        """
+        Kick command.
+
+        :param ctx: Context
+        :param member: Member
+        :param reason: Reason
+        """
         await member.kick(reason=reason)
         if reason:
             await ctx.send(f'{ctx.author.name} kicked {member.mention} for {reason}')
         else:
             await ctx.send(f'{ctx.author.name} kicked {member.mention}')
 
-    # ban command
     @commands.command()
+    @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
-        if ctx.author.id != int(os.getenv('DEV_ID')):
-            await ctx.send(os.getenv('NO_PERMISSION'))
-            return
+        """
+        Ban command.
+
+        :param ctx: Context
+        :param member: Member
+        :param reason: Reason
+        """
         await member.ban(reason=reason)
         if reason:
             await ctx.send(f'{ctx.author.name} banned {member.mention} for {reason}')
         else:
             await ctx.send(f'{ctx.author.name} banned {member.mention}')
 
-    # unban command
     @commands.command()
+    @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, *, member=None):
-        if ctx.author.id != int(os.getenv('DEV_ID')):
-            await ctx.send(os.getenv('NO_PERMISSION'))
-            return
+        """
+        Unban command.
+
+        :param ctx: Context
+        :param member: Member
+        """
         banned_users = await ctx.guild.bans()
         member_name, member_discriminator = member.split('#')
-
         for ban_entry in banned_users:
             user = ban_entry.user
             if (user.name, user.discriminator) == (member_name, member_discriminator):
@@ -68,12 +63,15 @@ class Admin(commands.Cog):
                 await ctx.send(f'{ctx.author.name} unbanned {user.mention}')
                 return
 
-    # clear command
     @commands.command()
+    @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, *, amount: typing.Union[int, float, str]):
-        if ctx.author.id != int(os.getenv('DEV_ID')):
-            await ctx.send(os.getenv('NO_PERMISSION'))
-            return
+        """
+        Clear messages command.
+
+        :param ctx: Context
+        :param amount: Amount of message to be deleted, maximum of 25.
+        """
         if isinstance(amount, int) and amount > 0:
             if amount < 26:
                 await ctx.message.delete()
@@ -84,25 +82,40 @@ class Admin(commands.Cog):
         else:
             await ctx.send('Only numeric values.')
 
-    # kick error
     @kick.error
     async def kick_error(self, ctx, error):
+        """
+        Kick error custom message.
+
+        :param ctx: Context
+        :param error: Error
+        """
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('Please specify the name of member to kick.')
         elif isinstance(error, commands.BadArgument):
             await ctx.send('Member not found.')
 
-    # ban error
     @ban.error
     async def ban_error(self, ctx, error):
+        """
+        Ban error custom message
+
+        :param ctx: Context
+        :param error: Error
+        """
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('Please specify the name of member to ban.')
         elif isinstance(error, commands.BadArgument):
             await ctx.send('Member not found.')
 
-    # clear error
     @clear.error
     async def clear_error(self, ctx, error):
+        """
+        Clear error custom message.
+
+        :param ctx: Context
+        :param error: Error
+        """
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('Please specify an amount of messages to delete.')
 
