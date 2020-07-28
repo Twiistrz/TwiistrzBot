@@ -4,9 +4,6 @@
 import discord
 import typing
 from discord.ext import commands
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 class Admin(commands.Cog):
@@ -98,7 +95,7 @@ class Admin(commands.Cog):
     @ban.error
     async def ban_error(self, ctx, error):
         """
-        Ban error custom message
+        Ban error custom message.
 
         :param ctx: Context
         :param error: Error
