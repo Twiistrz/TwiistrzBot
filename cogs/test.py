@@ -45,6 +45,7 @@ class Test(commands.Cog):
                      'Very doubtful']
         await ctx.send(f'**Q:** {question}\n**A:** {random.choice(responses)}')
 
+    # 8ball error
     @_8ball.error
     async def _8ball_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):

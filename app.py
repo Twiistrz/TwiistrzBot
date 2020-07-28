@@ -1,6 +1,10 @@
 # -----------------------------------------------------------
 # (C) 2020 Emmanuel See Te, Cavite, Philippines
 # -----------------------------------------------------------
+"""
+Docs: https://discordpy.readthedocs.io/en/latest/
+Repository: https://github.com/Twiistrz/TwiistrzBot
+"""
 import discord
 import os
 from discord.ext import commands, tasks
