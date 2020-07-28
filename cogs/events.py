@@ -22,6 +22,8 @@ class Events(commands.Cog):
         # Errors: MissingRequiredArgument, CommandNotFound
         if isinstance(error, commands.CommandNotFound):
             pass
+        else:
+            print(error)
 
 
 def setup(client):

@@ -22,7 +22,7 @@ class Test(commands.Cog):
 
     # 8ball command
     @commands.command(aliases=['8ball', 'ask'])
-    async def _8ball(self, ctx, *, question=None):
+    async def _8ball(self, ctx, *, question):
         responses = ['It is certain',
                      'It is decidedly so',
                      'Without a doubt',
@@ -43,10 +43,12 @@ class Test(commands.Cog):
                      'My sources say no',
                      'Outlook not so good',
                      'Very doubtful']
-        if not question:
-            await ctx.send('Question must not be empty!')
-            return
         await ctx.send(f'**Q:** {question}\n**A:** {random.choice(responses)}')
+
+    @_8ball.error
+    async def _8ball_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send('Please specify a question.')
 
 
 def setup(client):
