@@ -9,7 +9,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 client = commands.Bot(command_prefix='.')
-status = cycle(['Twiistrz Basement', 'YokaIII', 'MCPinoyZone', 'Discord Python'])
+status = cycle([
+    '魔王学院の不適合者',
+    '炎炎ノ消防隊',
+    'ソードアート・オンライン',
+    '宇崎ちゃんは遊びたい！',
+    'とある科学の超電磁砲',
+    'The God of High School'
+])
 
 
 @client.event
