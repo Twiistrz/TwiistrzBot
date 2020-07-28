@@ -51,7 +51,7 @@ async def on_ready():
     print(f'Cogs Loaded ({cogs_loaded_count}): {cogs_loaded_name}')
 
 
-@client.command(name='load')
+@client.command()
 @commands.check(is_dev)
 async def load(ctx, ext=None):
     """
