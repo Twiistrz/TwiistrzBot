@@ -7,12 +7,12 @@ Repository: https://github.com/Twiistrz/TwiistrzBot
 """
 import os
 import discord
+import json
 from itertools import cycle
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
 load_dotenv()
-client = commands.Bot(command_prefix='.')
 status = cycle([
     '魔王学院の不適合者',
     '炎炎ノ消防隊',
@@ -21,6 +21,20 @@ status = cycle([
     'とある科学の超電磁砲',
     'The God of High School'
 ])
+
+
+async def get_prefix(client, message):
+    """
+    Get prefix of the current server.
+
+    :param client:
+    :param message: Message
+    """
+    with open('prefixes.json', 'r') as file:
+        prefixes = json.load(file)
+    return prefixes[str(message.guild.id)]
+
+client = commands.Bot(command_prefix=get_prefix)
 
 
 async def is_dev(ctx):

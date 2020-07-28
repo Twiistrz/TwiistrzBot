@@ -3,12 +3,29 @@
 # -----------------------------------------------------------
 import discord
 import typing
+import json
 from discord.ext import commands
 
 
 class Admin(commands.Cog):
     def __init__(self, client):
         self.client = client
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def setprefix(self, ctx, prefix):
+        """
+        Change prefix of the bot.
+
+        :param ctx: Context
+        :param prefix: New prefix of the bot
+        """
+        with open('prefixes.json', 'r') as file:
+            prefixes = json.load(file)
+        prefixes[str(ctx.guild.id)] = prefix
+        with open('prefixes.json', 'w') as file:
+            json.dump(prefixes, file, indent=4)
+        await ctx.send(f'Prefix set to `{prefix}`')
 
     @commands.command()
     @commands.has_permissions(kick_members=True)
@@ -79,10 +96,21 @@ class Admin(commands.Cog):
         else:
             await ctx.send('Only numeric values.')
 
+    @setprefix.error
+    async def setprefix_error(self, ctx, e):
+        """
+        Set prefix custom error message.
+
+        :param ctx: Context
+        :param e: Error
+        """
+        if isinstance(e, commands.MissingRequiredArgument):
+            await ctx.send('Please input a new prefix.')
+
     @kick.error
     async def kick_error(self, ctx, error):
         """
-        Kick error custom message.
+        Kick custom error message.
 
         :param ctx: Context
         :param error: Error
@@ -95,7 +123,7 @@ class Admin(commands.Cog):
     @ban.error
     async def ban_error(self, ctx, error):
         """
-        Ban error custom message.
+        Ban custom error message.
 
         :param ctx: Context
         :param error: Error
@@ -108,7 +136,7 @@ class Admin(commands.Cog):
     @clear.error
     async def clear_error(self, ctx, error):
         """
-        Clear error custom message.
+        Clear custom error message.
 
         :param ctx: Context
         :param error: Error

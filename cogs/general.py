@@ -12,19 +12,19 @@ class General(commands.Cog):
     @commands.command()
     async def ping(self, ctx):
         """
-        Ping Command
+        Ping command.
+
         :param ctx: Context
-        :return:
         """
         await ctx.send(f'Pong! - Time taken: **{round(self.client.latency * 1000)}ms**')
 
     @commands.command(name='8ball', aliases=['ask','8b'])
     async def _8ball(self, ctx, *, q):
         """
-        8Ball Command
+        8Ball command.
+
         :param ctx: Context
         :param q: Question
-        :return:
         """
         responses = ['It is certain',
                      'It is decidedly so',
@@ -51,7 +51,7 @@ class General(commands.Cog):
     @_8ball.error
     async def _8ball_error(self, ctx, e):
         """
-        8Ball error custom message.
+        8Ball custom error message.
 
         :param ctx: Context
         :param e: Error
