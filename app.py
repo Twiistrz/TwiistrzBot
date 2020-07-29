@@ -5,9 +5,7 @@
 Discord Python Docs: https://discordpy.readthedocs.io/en/latest/
 Repository: https://github.com/Twiistrz/TwiistrzBot
 """
-import os
-import discord
-import json
+import os, discord, json, time
 from itertools import cycle
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
@@ -47,6 +45,51 @@ async def is_dev(ctx):
     return ctx.author.id == int(os.getenv('DEV_ID'))
 
 
+async def update_data(users, user):
+    """
+    Initialize levels data
+
+    :param users: A list of members
+    :param user: Author
+    """
+    if not str(user.id) in users:
+        users[str(user.id)] = {}
+        users[str(user.id)]['exp'] = 0
+        users[str(user.id)]['lvl'] = 1
+        users[str(user.id)]['timestamp'] = 0
+
+
+async def exp_up(users, user, exp):
+    """
+    Add Experience
+
+    :param users: A list of members
+    :param user: Author
+    :param exp: Experience gain
+    """
+    if time.time() - users[str(user.id)]['timestamp'] > 30:
+        users[str(user.id)]['exp'] += exp
+        users[str(user.id)]['timestamp'] = time.time()
+
+
+async def lvl_up(users, user, channel):
+    """
+    Level up
+
+    :param users: A list of members
+    :param user: Author
+    :param channel: Channel
+    """
+    exp = users[str(user.id)]['exp']
+    lvl_old = users[str(user.id)]['lvl']
+    lvl_new = int(exp ** (1 / 4))
+    if lvl_old < lvl_new:
+        if lvl_new <= 100:
+            await channel.send(f':tada: AYOOOOO {user.mention}, you just advanced to level {lvl_new}!')
+            users[str(user.id)]['exp'] = users[str(user.id)]['exp'] / 16
+            users[str(user.id)]['lvl'] = lvl_new
+
+
 @client.event
 async def on_ready():
     """
@@ -63,6 +106,23 @@ async def on_ready():
     change_status.start()
     print(f'Logged in as {client.user}')
     print(f'Cogs Loaded ({cogs_loaded_count}): {cogs_loaded_name}')
+
+
+@client.event
+async def on_message(message):
+    """
+    Level up system
+    """
+    with open('levels.json', 'r') as f1:
+        users = json.load(f1)
+        if not message.author.bot:
+            await update_data(users, message.author)
+            exp = 0.1 * users[str(message.author.id)]['lvl'] ** 1.2 + (users[str(message.author.id)]['exp'] / 16)
+            await exp_up(users, message.author, exp)
+            await lvl_up(users, message.author, message.channel)
+        with open('levels.json', 'w') as f2:
+            json.dump(users, f2, indent=4)
+    await client.process_commands(message)
 
 
 @client.command()

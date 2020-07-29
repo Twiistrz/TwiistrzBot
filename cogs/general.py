@@ -2,12 +2,23 @@
 # (C) 2020 Emmanuel See Te, Cavite, Philippines
 # -----------------------------------------------------------
 import random
+import json
 from discord.ext import commands
 
 
 class General(commands.Cog):
     def __init__(self, client):
         self.client = client
+
+    @commands.command()
+    async def level(self, ctx):
+        with open('levels.json', 'r') as file:
+            users = json.load(file)
+            if not ctx.author.bot:
+                user = users[str(ctx.author.id)]
+                lvl, exp = user['lvl'], round(user['exp'], 2)
+                lvl = f'Max ({lvl})' if lvl >= 500 else lvl
+                await ctx.send(f'Level: **{lvl}**\nExperience: **{exp}**')
 
     @commands.command()
     async def ping(self, ctx):
