@@ -6,6 +6,8 @@ There comes a point in your bot’s development when you want to
 organize a collection of commands, listeners, and some state into
 one class. Cogs allow you to do just that.
 """
+from random import randint
+
 from discord.ext import commands
 from discord.utils import get
 
@@ -13,6 +15,19 @@ from discord.utils import get
 class Test(commands.Cog):
     def __init__(self, client):
         self.client = client
+
+    @commands.command()
+    async def lvltest(self, ctx):
+        XP_REWARD_RANGE = (15, 25)
+        COOLDOWN_DURATION = 60
+        lvls_xp = [5 * (i ** 2) + 50 * i + 100 for i in range(200)]
+        player_lvl = 0
+        player_xp = 0
+        print(lvls_xp)
+        new_xp = randint(*XP_REWARD_RANGE)
+        print(new_xp)
+        print(f'{player_lvl} : {player_xp}')
+        print(f'{lvls_xp[player_lvl]}')
 
     @commands.command()
     async def kofi(self, ctx):

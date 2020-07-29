@@ -5,8 +5,13 @@
 Discord Python Docs: https://discordpy.readthedocs.io/en/latest/
 Repository: https://github.com/Twiistrz/TwiistrzBot
 """
-import os, discord, json, time
+import discord
+import json
+import os
+import time
 from itertools import cycle
+from random import randint
+
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
@@ -45,7 +50,7 @@ async def is_dev(ctx):
     return ctx.author.id == int(os.getenv('DEV_ID'))
 
 
-async def update_data(users, user):
+async def is_level_data(users, user):
     """
     Initialize levels data
 
@@ -55,7 +60,7 @@ async def update_data(users, user):
     if not str(user.id) in users:
         users[str(user.id)] = {}
         users[str(user.id)]['exp'] = 0
-        users[str(user.id)]['lvl'] = 1
+        users[str(user.id)]['lvl'] = 0
         users[str(user.id)]['timestamp'] = 0
 
 
@@ -67,9 +72,9 @@ async def exp_up(users, user, exp):
     :param user: Author
     :param exp: Experience gain
     """
-    if time.time() - users[str(user.id)]['timestamp'] > 30:
-        users[str(user.id)]['exp'] += exp
-        users[str(user.id)]['timestamp'] = time.time()
+    # if time.time() - users[str(user.id)]['timestamp'] > 30:
+    users[str(user.id)]['exp'] += exp
+    users[str(user.id)]['timestamp'] = time.time()
 
 
 async def lvl_up(users, user, channel):
@@ -80,14 +85,11 @@ async def lvl_up(users, user, channel):
     :param user: Author
     :param channel: Channel
     """
-    exp = users[str(user.id)]['exp']
-    lvl_old = users[str(user.id)]['lvl']
-    lvl_new = int(exp ** (1 / 4))
-    if lvl_old < lvl_new:
-        if lvl_new <= 100:
-            await channel.send(f':tada: AYOOOOO {user.mention}, you just advanced to level {lvl_new}!')
-            users[str(user.id)]['exp'] = users[str(user.id)]['exp'] / 16
-            users[str(user.id)]['lvl'] = lvl_new
+    exp, lvl, lvl_xp = users[str(user.id)]['exp'], users[str(user.id)]['lvl'], [5 * (i ** 2) + 50 * i + 100 for i in range(200)]
+    if exp >= lvl_xp[lvl]:
+        users[str(user.id)]['exp'] = 0
+        users[str(user.id)]['lvl'] += 1
+        await channel.send(f':tada: AYOOOOO {user.mention}, you just advanced to level {users[str(user.id)]["lvl"]}!')
 
 
 @client.event
@@ -113,15 +115,15 @@ async def on_message(message):
     """
     Level up system
     """
-    with open('levels.json', 'r') as f1:
-        users = json.load(f1)
-        if not message.author.bot:
-            await update_data(users, message.author)
-            exp = 0.1 * users[str(message.author.id)]['lvl'] ** 1.2 + (users[str(message.author.id)]['exp'] / 16)
-            await exp_up(users, message.author, exp)
+    if not message.author.bot:
+        with open('levels.json', 'r') as file:
+            users = json.load(file)
+            await is_level_data(users, message.author)
+            exp_formula = randint(*(15, 25))
+            await exp_up(users, message.author, exp_formula)
             await lvl_up(users, message.author, message.channel)
-        with open('levels.json', 'w') as f2:
-            json.dump(users, f2, indent=4)
+        with open('levels.json', 'w') as file:
+            json.dump(users, file, indent=4)
     await client.process_commands(message)
 
 

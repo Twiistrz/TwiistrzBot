@@ -5,6 +5,8 @@ import random
 import json
 from discord.ext import commands
 
+lvl_xp = [5 * (i ** 2) + 50 * i + 100 for i in range(200)]
+
 
 class General(commands.Cog):
     def __init__(self, client):
@@ -16,9 +18,15 @@ class General(commands.Cog):
             users = json.load(file)
             if not ctx.author.bot:
                 user = users[str(ctx.author.id)]
-                lvl, exp = user['lvl'], round(user['exp'], 2)
-                lvl = f'Max ({lvl})' if lvl >= 500 else lvl
-                await ctx.send(f'Level: **{lvl}**\nExperience: **{exp}**')
+                lvl, exp = user['lvl'], int(user['exp'])
+                lvl, lvl_percent = f'Max ({lvl})' if lvl >= 100 else lvl, (exp / lvl_xp[lvl]) * 10
+                progress_bar = '['
+                for i in range(0, int(lvl_percent)):
+                    progress_bar += '▰'
+                for j in range(0, 10-int(lvl_percent)):
+                    progress_bar += '▱'
+                progress_bar += ']'
+                await ctx.send(f'Name: **{ctx.author.name}#{ctx.author.discriminator}**\nLevel: **{lvl}**\nExperience: **{exp}/{lvl_xp[lvl]}\n{progress_bar}**')
 
     @commands.command()
     async def ping(self, ctx):
