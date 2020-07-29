@@ -1,0 +1,28 @@
+{
+    "266897885533175808": {
+        "reputation": 1,
+        "money": 300,
+        "health": 120,
+        "max-health": 120,
+        "mana": 100,
+        "max-mana": 100,
+        "exp": 114,
+        "lvl": 4,
+        "timestamp": 1596032561.1198707,
+        "daily-timestamp": 1596028536.7796237,
+        "rep-timestamp": 1596031754.0816667
+    },
+    "219116869997559808": {
+        "reputation": 1,
+        "money": 300,
+        "health": 120,
+        "max-health": 120,
+        "mana": 100,
+        "max-mana": 100,
+        "exp": 0,
+        "lvl": 1,
+        "timestamp": 1596031772.4890172,
+        "daily-timestamp": 1596030025.5036483,
+        "rep-timestamp": 1596031772.9830017
+    }
+}

@@ -6,8 +6,7 @@ There comes a point in your bot’s development when you want to
 organize a collection of commands, listeners, and some state into
 one class. Cogs allow you to do just that.
 """
-from random import randint
-
+import discord
 from discord.ext import commands
 from discord.utils import get
 
@@ -16,18 +15,21 @@ class Test(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
-    async def lvltest(self, ctx):
-        XP_REWARD_RANGE = (15, 25)
-        COOLDOWN_DURATION = 60
-        lvls_xp = [5 * (i ** 2) + 50 * i + 100 for i in range(200)]
-        player_lvl = 0
-        player_xp = 0
-        print(lvls_xp)
-        new_xp = randint(*XP_REWARD_RANGE)
-        print(new_xp)
-        print(f'{player_lvl} : {player_xp}')
-        print(f'{lvls_xp[player_lvl]}')
+    # @commands.command()
+    # async def embedtest(self, ctx):
+    #     embed = discord.Embed(
+    #         title=f'{ctx.author.name}#{ctx.author.discriminator}',
+    #         color=discord.Color(value=int('80ffdb', 16))
+    #     )
+    #
+    #     embed.set_footer(text='Footer')
+    #     embed.set_image(url='https://cdn.discordapp.com/avatars/266897885533175808/a_2b45a84aa2891bc97899d7428e113379.gif')
+    #     embed.set_thumbnail(url='https://cdn.discordapp.com/avatars/266897885533175808/a_2b45a84aa2891bc97899d7428e113379.gif')
+    #     embed.set_author(name='Author Name', icon_url='https://cdn.discordapp.com/avatars/266897885533175808/a_2b45a84aa2891bc97899d7428e113379.gif')
+    #     embed.add_field(name='Field Name', value='Field Value', inline=False)
+    #     embed.add_field(name='Field Name 1', value='Field Value 1', inline=True)
+    #     embed.add_field(name='Field Name 2', value='Field Value 2', inline=True)
+    #     await ctx.send(embed=embed)
 
     @commands.command()
     async def kofi(self, ctx):

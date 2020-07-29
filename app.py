@@ -59,9 +59,17 @@ async def is_level_data(users, user):
     """
     if not str(user.id) in users:
         users[str(user.id)] = {}
+        users[str(user.id)]['reputation'] = 0
+        users[str(user.id)]['money'] = 0
+        users[str(user.id)]['health'] = 120
+        users[str(user.id)]['max-health'] = 120
+        users[str(user.id)]['mana'] = 100
+        users[str(user.id)]['max-mana'] = 100
         users[str(user.id)]['exp'] = 0
         users[str(user.id)]['lvl'] = 0
         users[str(user.id)]['timestamp'] = 0
+        users[str(user.id)]['daily-timestamp'] = 0
+        users[str(user.id)]['rep-timestamp'] = 0
 
 
 async def exp_up(users, user, exp):
@@ -72,9 +80,9 @@ async def exp_up(users, user, exp):
     :param user: Author
     :param exp: Experience gain
     """
-    # if time.time() - users[str(user.id)]['timestamp'] > 30:
-    users[str(user.id)]['exp'] += exp
-    users[str(user.id)]['timestamp'] = time.time()
+    if time.time() - users[str(user.id)]['timestamp'] > 30:
+        users[str(user.id)]['exp'] += exp
+        users[str(user.id)]['timestamp'] = time.time()
 
 
 async def lvl_up(users, user, channel):
@@ -89,7 +97,7 @@ async def lvl_up(users, user, channel):
     if exp >= lvl_xp[lvl]:
         users[str(user.id)]['exp'] = 0
         users[str(user.id)]['lvl'] += 1
-        await channel.send(f':tada: AYOOOOO {user.mention}, you just advanced to level {users[str(user.id)]["lvl"]}!')
+        await channel.send(f':tada:  |  **AYOOOOO {user.name}, you just advanced to level {users[str(user.id)]["lvl"]}!**')
 
 
 @client.event
@@ -116,14 +124,14 @@ async def on_message(message):
     Level up system
     """
     if not message.author.bot:
-        with open('levels.json', 'r') as file:
-            users = json.load(file)
+        with open('users.json', 'r') as f1:
+            users = json.load(f1)
             await is_level_data(users, message.author)
             exp_formula = randint(*(15, 25))
             await exp_up(users, message.author, exp_formula)
             await lvl_up(users, message.author, message.channel)
-        with open('levels.json', 'w') as file:
-            json.dump(users, file, indent=4)
+            with open('users.json', 'w') as f2:
+                json.dump(users, f2, indent=4)
     await client.process_commands(message)
 
 
